@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proyectofinal/models/modelVideojuegos.dart';
+import 'package:proyectofinal/Services/videoJuegos_services.dart';
 
 class ListaProductos extends StatefulWidget {
   const ListaProductos({Key? key}) : super(key: key);
@@ -9,19 +11,21 @@ class ListaProductos extends StatefulWidget {
 
 class _ListaProductosState extends State<ListaProductos> {
   // Lista de productos ficticia
-  List<String> productos = [
-    "Producto 2",
-    "Producto 3",
-    "Producto 4",
-    "Producto 5",
-    "Producto 6",
-    "Producto 10",
-    "Producto 20",
-    "Producto 30",
-    "Producto 40",
-    "Producto 50",
-    "Producto 60",
-  ];
+  List<Videojuego>? listaVideojuedo;
+
+  loadVideojuego() async {
+    VideojuegosService service = VideojuegosService();
+    listaVideojuedo = await service.getComputador();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadVideojuego();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +43,18 @@ class _ListaProductosState extends State<ListaProductos> {
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 250,
-                    childAspectRatio: 3 / 2,
+                    childAspectRatio: 4 / 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 20,
                   ),
-                  itemCount: productos.length,
+                  itemCount: listaVideojuedo?.length?? 0,
                   shrinkWrap: true,
                   physics:
                       NeverScrollableScrollPhysics(), // Deshabilitar el scroll del GridView
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
                       child: Center(
-                        child: Text(productos[index]),
+                        child: Text(listaVideojuedo?[index].nombrejuego ?? " "),
                       ),
                     );
                   },
@@ -62,7 +66,7 @@ class _ListaProductosState extends State<ListaProductos> {
               onPressed: () {
                 // Lógica para eliminar productos
                 setState(() {
-                  productos.clear();
+                  listaVideojuedo?.clear();
                 });
               },
               child: Text('Eliminar'),
