@@ -23,6 +23,7 @@ class VideojuegosService {
       } else {
         developer.log('Request failed with status: ${response.statusCode}.');
       }
+      
       return result;
     } catch (ex) {
       developer.log(ex.toString());

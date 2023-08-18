@@ -29,7 +29,7 @@ class Videojuego {
   //String? nombrejuego;
   //String? nombrejuego;
   //"nombrejuego": "Leanne Graham",
-  //"genero ": "Bret",
+  //"presio ": "Bret",
   //int? genero ;
   //String? genero;
 

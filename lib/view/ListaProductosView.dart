@@ -31,7 +31,7 @@ class _ListaProductosState extends State<ListaProductos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de productos"),
+        title: Text("Lista de los productos"),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height *
