@@ -35,6 +35,7 @@ class Videojuego {
 
   factory Videojuego.fromJson(Map<String, dynamic> json) => Videojuego(
         id: json["id"],
+        
         nombrejuego: json["nombrejuego"],
         genero : json["genero "],
         aniolanzamiento : json["aniolanzamiento "],
