@@ -24,6 +24,16 @@ class _FormularioProductoState extends State<FormularioProducto> {
   DateTime selectedDate = DateTime.now();
   bool isDatePickerVisible = false;
   XFile? pickedImage;
+  String selectedOption = 'Nelson'; // Variable para el ComboBox
+
+  List<String> opciones = [
+    'Nelson',
+    'Juan',
+    'Carlos',
+    'Goevanny',
+    'Anderson',
+    'Carla'
+  ]; // Opciones del ComboBox
 
   void toggleDatePicker() {
     setState(() {
@@ -53,6 +63,14 @@ class _FormularioProductoState extends State<FormularioProducto> {
 
   @override
   Widget build(BuildContext context) {
+    List listaNames = [
+      'Nelson',
+      'Juan',
+      'Carlos',
+      'Goevanny',
+      'Anderson',
+      'Carla'
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text("Ingreso de productos"),
@@ -61,6 +79,32 @@ class _FormularioProductoState extends State<FormularioProducto> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // DropdownButton al principio del formulario
+            Container(
+              width: double
+                  .infinity, // Esto hace que el DropdownButton ocupe todo el ancho
+              child: DropdownButton<String>(
+                value: selectedOption,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    if (opciones.contains(newValue)) {
+                      selectedOption = newValue!;
+                    } else {
+                      // Maneja el caso en que el valor no está en la lista.
+                      // Puedes mostrar un mensaje de error o seleccionar un valor predeterminado.
+                      selectedOption =
+                          'ValorPredeterminado'; // Cambia 'ValorPredeterminado' por tu opción predeterminada real.
+                    }
+                  });
+                },
+                items: opciones.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
             TextField(
               controller: nombreController,
               decoration: InputDecoration(labelText: 'Nombre del producto'),
@@ -141,10 +185,11 @@ class _FormularioProductoState extends State<FormularioProducto> {
                 print('Descripción: ${descripcionController.text}');
                 print('Fecha seleccionada: $selectedDate');
                 print('Ruta de imagen: ${pickedImage?.path}');
+                print('Opción seleccionada: $selectedOption');
 
                 setState(() {
                   infoText =
-                      'Producto: ${nombreController.text}\nPrecio: \$${precioController.text}\nDescripción: ${descripcionController.text}\nFecha: ${DateFormat('yyyy-MM-dd').format(selectedDate)}';
+                      'Producto: ${nombreController.text}\nPrecio: \$${precioController.text}\nDescripción: ${descripcionController.text}\nFecha: ${DateFormat('yyyy-MM-dd').format(selectedDate)}\nOpción seleccionada: $selectedOption';
                 });
               },
               child: Text('Mostrar información'),
