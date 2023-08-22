@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:proyectofinal/Services/videoJuegos_services.dart';
 
 import '../Services/firebase_services.dart';
+import 'IngresosProductosView.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,7 @@ class _ListaProductosState extends State<ListaProductos> {
         title: Text("Lista de productos"),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height * 0.85,
         child: Column(
           children: [
             Expanded(
@@ -42,36 +43,42 @@ class _ListaProductosState extends State<ListaProductos> {
                     if (snapshot.hasData) {
                       return GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 250,
-                          childAspectRatio: 4 / 2,
-                          crossAxisSpacing: 10,
+                          maxCrossAxisExtent: 350,
+                          childAspectRatio: 2 / 3,
+                          crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
                         ),
                         itemCount: snapshot.data?.length ?? 0,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
-                          final Map<String, dynamic> data = snapshot.data?[index] as Map<String, dynamic>;
+                          final Map<String, dynamic> data =
+                              snapshot.data?[index] as Map<String, dynamic>;
 
                           final timestamp = data['Fecha'] as Timestamp;
                           final dateTime = timestamp.toDate();
 
                           return Card(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(data['Nombre'] ?? ''),
-                                  Text(data['Precio']?.toString() ?? ''),
-                                  Text(data['Descripcion'] ?? ''),
-                                  Text(dateTime.toString()),
-                                  SizedBox(
-                                    height:80,
-                                    width:80,
-                                    child:Image.network(data['Imagen'])
-                                  )
-                                ],
-                              ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(data['Nombre'] ?? ''),
+                                Text(data['Precio']?.toString() ?? ''),
+                                Text(data['Descripcion'] ?? ''),
+                                Text(dateTime.toString()),
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: Image.network(data['Imagen']),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Aquí puedes manejar la lógica de actualización
+                                    // para el producto correspondiente.
+                                  },
+                                  child: Text('Actualizar'),
+                                ),
+                              ],
                             ),
                           );
                         },
@@ -85,7 +92,16 @@ class _ListaProductosState extends State<ListaProductos> {
                 ),
               ),
             ),
-            SizedBox(height: 100),
+            SizedBox(height: 20), // Espacio entre la lista y el botón
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FormularioProducto()),
+                );
+              },
+              child: Text('Ingresar'),
+            ),
           ],
         ),
       ),

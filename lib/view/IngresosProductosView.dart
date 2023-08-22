@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:proyectofinal/Services/firebase_services.dart';
 import 'package:proyectofinal/Services/firebase_storage.dart';
-import 'package:proyectofinal/view/ListaProductosView.dart'; 
+import 'package:proyectofinal/view/ListaProductosView.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -29,6 +29,9 @@ class _FormularioProductoState extends State<FormularioProducto> {
   DateTime selectedDate = DateTime.now();
   bool isDatePickerVisible = false;
   XFile? pickedImage;
+
+  List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+  String selectedItem = 'Item 1'; // Valor seleccionado por defecto
 
   void toggleDatePicker() {
     setState(() {
@@ -56,7 +59,7 @@ class _FormularioProductoState extends State<FormularioProducto> {
     }
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -66,6 +69,20 @@ class _FormularioProductoState extends State<FormularioProducto> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            DropdownButton<String>(
+              value: selectedItem,
+              onChanged: (newValue) {
+                setState(() {
+                  selectedItem = newValue!;
+                });
+              },
+              items: items.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
             TextField(
               controller: nombreController,
               decoration: InputDecoration(labelText: 'Nombre del producto'),
@@ -140,36 +157,36 @@ class _FormularioProductoState extends State<FormularioProducto> {
                   : Icon(Icons.image, size: 50),
             ),
             ElevatedButton(
-            onPressed: () async {
-              final currentContext = context; 
-              print('Nombre: ${nombreController.text}');
-              print('Precio: ${precioController.text}');
-              print('Descripción: ${descripcionController.text}');
-              print('Fecha seleccionada: $selectedDate');
-              print('Ruta de imagen: ${pickedImage?.path}');
+              onPressed: () async {
+                final currentContext = context;
+                print('Nombre: ${nombreController.text}');
+                print('Precio: ${precioController.text}');
+                print('Descripción: ${descripcionController.text}');
+                print('Fecha seleccionada: $selectedDate');
+                print('Ruta de imagen: ${pickedImage?.path}');
 
-              String imagePath = pickedImage?.path ?? ''; 
-              DateTime formattedDate = DateTime(
-                selectedDate.year,
-                selectedDate.month,
-                selectedDate.day,
-              );
-            File photoAsFile = File(pickedImage!.path);
-            String URLImagen= await uploadImage(photoAsFile);
-              await saveProductos(
-            nombreController.text,
-            int.parse(precioController.text),
-            descripcionController.text,
-            formattedDate,
-            URLImagen,
-          );
+                String imagePath = pickedImage?.path ?? '';
+                DateTime formattedDate = DateTime(
+                  selectedDate.year,
+                  selectedDate.month,
+                  selectedDate.day,
+                );
+                File photoAsFile = File(pickedImage!.path);
+                String URLImagen = await uploadImage(photoAsFile);
+                await saveProductos(
+                  nombreController.text,
+                  int.parse(precioController.text),
+                  descripcionController.text,
+                  formattedDate,
+                  URLImagen,
+                );
 
-               _navigatorKey.currentState?.push(
-            MaterialPageRoute(builder: (context) => ListaProductos()), 
-            );
-          },
-          child: const Text("Guardar"),
-        ),
+                _navigatorKey.currentState?.push(
+                  MaterialPageRoute(builder: (context) => ListaProductos()),
+                );
+              },
+              child: const Text("Guardar"),
+            ),
             SizedBox(height: 20),
             Text(
               infoText,
