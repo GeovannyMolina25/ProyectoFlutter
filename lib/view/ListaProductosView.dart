@@ -74,8 +74,12 @@ class _ListaProductosState extends State<ListaProductos> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Aquí puedes manejar la lógica de actualización
-                                    // para el producto correspondiente.
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              FormularioProducto()),
+                                    );
                                   },
                                   child: Text('Actualizar'),
                                 ),
