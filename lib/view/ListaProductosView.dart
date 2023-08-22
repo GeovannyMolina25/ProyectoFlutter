@@ -1,6 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:proyectofinal/models/modelVideojuegos.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 import 'package:proyectofinal/Services/videoJuegos_services.dart';
+
+import '../Services/firebase_services.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MaterialApp(home: ListaProductos()));
+}
 
 class ListaProductos extends StatefulWidget {
   const ListaProductos({Key? key}) : super(key: key);
@@ -10,21 +19,9 @@ class ListaProductos extends StatefulWidget {
 }
 
 class _ListaProductosState extends State<ListaProductos> {
-  // Lista de productos ficticia
-  List<Videojuego>? listaVideojuedo;
-
-  loadVideojuego() async {
-    VideojuegosService service = VideojuegosService();
-    listaVideojuedo = await service.getComputador();
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    loadVideojuego();
   }
 
   @override
@@ -34,52 +31,64 @@ class _ListaProductosState extends State<ListaProductos> {
         title: Text("Lista de productos"),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height *
-            0.7, // Altura máxima de la mitad de la pantalla
+        height: MediaQuery.of(context).size.height * 0.7,
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 250,
-                    childAspectRatio: 4 / 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 20,
-                  ),
-                  itemCount: listaVideojuedo?.length?? 0,
-                  shrinkWrap: true,
-                  physics:
-                      NeverScrollableScrollPhysics(), // Deshabilitar el scroll del GridView
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      child: Center(
-                        child: Text(listaVideojuedo?[index].nombrejuego ?? " "),
-                      ),
-                    );
+                child: FutureBuilder(
+                  future: getProductos(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 250,
+                          childAspectRatio: 4 / 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 20,
+                        ),
+                        itemCount: snapshot.data?.length ?? 0,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          final Map<String, dynamic> data = snapshot.data?[index] as Map<String, dynamic>;
+
+                          final timestamp = data['Fecha'] as Timestamp;
+                          final dateTime = timestamp.toDate();
+
+                          return Card(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(data['Nombre'] ?? ''),
+                                  Text(data['Precio']?.toString() ?? ''),
+                                  Text(data['Descripcion'] ?? ''),
+                                  Text(dateTime.toString()),
+                                  SizedBox(
+                                    height:80,
+                                    width:80,
+                                    child:Image.network(data['Imagen'])
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error fetching data'));
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
                   },
                 ),
               ),
             ),
             SizedBox(height: 100),
-            ElevatedButton(
-              onPressed: () {
-                // Lógica para eliminar productos
-                setState(() {
-                  listaVideojuedo?.clear();
-                });
-              },
-              child: Text('Eliminar'),
-            ),
           ],
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: ListaProductos(),
-  ));
 }

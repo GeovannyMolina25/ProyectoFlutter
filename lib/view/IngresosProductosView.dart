@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:proyectofinal/Services/firebase_services.dart';
+import 'package:proyectofinal/Services/firebase_storage.dart';
+import 'package:proyectofinal/view/ListaProductosView.dart'; 
+
 void main() {
   runApp(MaterialApp(
     home: FormularioProducto(),
@@ -17,6 +21,7 @@ class FormularioProducto extends StatefulWidget {
 }
 
 class _FormularioProductoState extends State<FormularioProducto> {
+  GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   TextEditingController nombreController = TextEditingController();
   TextEditingController precioController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
@@ -24,16 +29,6 @@ class _FormularioProductoState extends State<FormularioProducto> {
   DateTime selectedDate = DateTime.now();
   bool isDatePickerVisible = false;
   XFile? pickedImage;
-  String selectedOption = 'Nelson'; // Variable para el ComboBox
-
-  List<String> opciones = [
-    'Nelson',
-    'Juan',
-    'Carlos',
-    'Goevanny',
-    'Anderson',
-    'Carla'
-  ]; // Opciones del ComboBox
 
   void toggleDatePicker() {
     setState(() {
@@ -61,16 +56,8 @@ class _FormularioProductoState extends State<FormularioProducto> {
     }
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
-    List listaNames = [
-      'Nelson',
-      'Juan',
-      'Carlos',
-      'Goevanny',
-      'Anderson',
-      'Carla'
-    ];
     return Scaffold(
       appBar: AppBar(
         title: Text("Ingreso de productos"),
@@ -79,32 +66,6 @@ class _FormularioProductoState extends State<FormularioProducto> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // DropdownButton al principio del formulario
-            Container(
-              width: double
-                  .infinity, // Esto hace que el DropdownButton ocupe todo el ancho
-              child: DropdownButton<String>(
-                value: selectedOption,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    if (opciones.contains(newValue)) {
-                      selectedOption = newValue!;
-                    } else {
-                      // Maneja el caso en que el valor no está en la lista.
-                      // Puedes mostrar un mensaje de error o seleccionar un valor predeterminado.
-                      selectedOption =
-                          'ValorPredeterminado'; // Cambia 'ValorPredeterminado' por tu opción predeterminada real.
-                    }
-                  });
-                },
-                items: opciones.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
             TextField(
               controller: nombreController,
               decoration: InputDecoration(labelText: 'Nombre del producto'),
@@ -179,21 +140,36 @@ class _FormularioProductoState extends State<FormularioProducto> {
                   : Icon(Icons.image, size: 50),
             ),
             ElevatedButton(
-              onPressed: () {
-                print('Nombre: ${nombreController.text}');
-                print('Precio: ${precioController.text}');
-                print('Descripción: ${descripcionController.text}');
-                print('Fecha seleccionada: $selectedDate');
-                print('Ruta de imagen: ${pickedImage?.path}');
-                print('Opción seleccionada: $selectedOption');
+            onPressed: () async {
+              final currentContext = context; 
+              print('Nombre: ${nombreController.text}');
+              print('Precio: ${precioController.text}');
+              print('Descripción: ${descripcionController.text}');
+              print('Fecha seleccionada: $selectedDate');
+              print('Ruta de imagen: ${pickedImage?.path}');
 
-                setState(() {
-                  infoText =
-                      'Producto: ${nombreController.text}\nPrecio: \$${precioController.text}\nDescripción: ${descripcionController.text}\nFecha: ${DateFormat('yyyy-MM-dd').format(selectedDate)}\nOpción seleccionada: $selectedOption';
-                });
-              },
-              child: Text('Mostrar información'),
-            ),
+              String imagePath = pickedImage?.path ?? ''; 
+              DateTime formattedDate = DateTime(
+                selectedDate.year,
+                selectedDate.month,
+                selectedDate.day,
+              );
+            File photoAsFile = File(pickedImage!.path);
+            String URLImagen= await uploadImage(photoAsFile);
+              await saveProductos(
+            nombreController.text,
+            int.parse(precioController.text),
+            descripcionController.text,
+            formattedDate,
+            URLImagen,
+          );
+
+               _navigatorKey.currentState?.push(
+            MaterialPageRoute(builder: (context) => ListaProductos()), 
+            );
+          },
+          child: const Text("Guardar"),
+        ),
             SizedBox(height: 20),
             Text(
               infoText,
