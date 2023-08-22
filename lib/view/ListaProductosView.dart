@@ -29,7 +29,8 @@ class _ListaProductosState extends State<ListaProductos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de productos"),
+        backgroundColor: Colors.amber, // Cambia a tu color deseado
+        title: const Text('Lista de productos'),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height * 0.85,

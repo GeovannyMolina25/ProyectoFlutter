@@ -63,7 +63,8 @@ class _FormularioProductoState extends State<FormularioProducto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ingreso de productos"),
+        backgroundColor: Colors.amber, // Cambia a tu color deseado
+        title: const Text('Ingreso de productos'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
