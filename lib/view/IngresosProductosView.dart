@@ -30,8 +30,8 @@ class _FormularioProductoState extends State<FormularioProducto> {
   bool isDatePickerVisible = false;
   XFile? pickedImage;
 
-  List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-  String selectedItem = 'Item 1'; // Valor seleccionado por defecto
+  List<String> items = ['Ninguno', 'Nelson', 'Geovanny', 'Amy'];
+  String selectedItem = 'Ninguno'; // Valor seleccionado por defecto
 
   void toggleDatePicker() {
     setState(() {
