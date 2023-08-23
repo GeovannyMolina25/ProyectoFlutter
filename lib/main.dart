@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           appBar: AppBar(
-            backgroundColor: Colors.red, // Cambia a tu color deseado
+            backgroundColor: Colors.red,
             title: const Text('PROYECTO FINAL'),
           ),
           body: Center(

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:proyectofinal/Services/videoJuegos_services.dart';
 
 import '../Services/firebase_services.dart';
+import 'ActualizacionProductos.dart';
 import 'IngresosProductosView.dart';
 
 void main() async {
@@ -78,7 +79,7 @@ class _ListaProductosState extends State<ListaProductos> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              FormularioProducto()),
+                                              FormularioActualizar()),
                                     );
                                   },
                                   child: Text('Actualizar'),
