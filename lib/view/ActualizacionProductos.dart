@@ -186,7 +186,7 @@ class _FormularioActualizarState extends State<FormularioActualizar> {
                   MaterialPageRoute(builder: (context) => ListaProductos()),
                 );
               },
-              child: const Text("Guardar"),
+              child: const Text("Guardar actualizacion"),
             ),
             SizedBox(height: 20),
             Text(
