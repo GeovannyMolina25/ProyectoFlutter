@@ -9,12 +9,14 @@ import 'package:proyectofinal/view/ListaProductosView.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: FormularioActualizar(),
+    home: FormularioActualizar(uid: 'uid'),
   ));
 }
 
 class FormularioActualizar extends StatefulWidget {
-  const FormularioActualizar({Key? key}) : super(key: key);
+  final String uid;
+
+  const FormularioActualizar({Key? key, required this.uid}) : super(key: key);
 
   @override
   State<FormularioActualizar> createState() => _FormularioActualizarState();
@@ -174,15 +176,16 @@ class _FormularioActualizarState extends State<FormularioActualizar> {
                 );
                 File photoAsFile = File(pickedImage!.path);
                 String URLImagen = await uploadImage(photoAsFile);
-                await saveProductos(
+                await updateProductos('UID: ${widget.uid}',
                   nombreController.text,
                   int.parse(precioController.text),
                   descripcionController.text,
                   formattedDate,
                   URLImagen,
                 );
-
-                _navigatorKey.currentState?.push(
+                 // ignore: use_build_context_synchronously
+                 Navigator.push(
+                  context, 
                   MaterialPageRoute(builder: (context) => ListaProductos()),
                 );
               },

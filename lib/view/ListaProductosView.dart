@@ -30,7 +30,7 @@ class _ListaProductosState extends State<ListaProductos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber, // Cambia a tu color deseado
+        backgroundColor: Colors.amber,
         title: const Text('Lista de productos'),
       ),
       body: Container(
@@ -78,8 +78,10 @@ class _ListaProductosState extends State<ListaProductos> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              FormularioActualizar()),
+                                        builder: (context) => FormularioActualizar(
+                                          uid: snapshot.data?[index]["uid"],
+                                        ),
+                                      ),
                                     );
                                   },
                                   child: Text('Actualizar'),
@@ -98,7 +100,7 @@ class _ListaProductosState extends State<ListaProductos> {
                 ),
               ),
             ),
-            SizedBox(height: 20), // Espacio entre la lista y el botón
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(

@@ -181,8 +181,8 @@ class _FormularioProductoState extends State<FormularioProducto> {
                   formattedDate,
                   URLImagen,
                 );
-
-                _navigatorKey.currentState?.push(
+               Navigator.push(
+                  context, 
                   MaterialPageRoute(builder: (context) => ListaProductos()),
                 );
               },
